@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface Medication {
   _id: string;
@@ -13,14 +13,14 @@ function Patient() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // DETERMINE BACKEND URL
+  // ✅ DETERMINE BACKEND URL
   const API_BASE =
     process.env.NODE_ENV === "development"
       ? "http://localhost:5000" // local backend
-      : ""; // deployed backend (relative path for Vercel serverless)
+      : process.env.REACT_APP_API_URL; // deployed backend URL
 
-  // FETCH MEDICINES
-  const fetchMeds = async () => {
+  // ✅ FETCH MEDICINES (wrapped in useCallback for ESLint)
+  const fetchMeds = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -40,7 +40,9 @@ function Patient() {
       try {
         data = JSON.parse(text);
       } catch {
-        throw new Error("Response is not valid JSON. Maybe backend returned HTML?");
+        throw new Error(
+          "Response is not valid JSON. Maybe backend returned HTML?"
+        );
       }
 
       setMedications(data);
@@ -50,25 +52,26 @@ function Patient() {
     } finally {
       setLoading(false);
     }
+  }, [API_BASE]);
+
+  // ✅ MARK TABLET TAKEN
+  const markTaken = async (id: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/medicines/${id}`, {
+        method: "PUT",
+      });
+      if (!res.ok) throw new Error(`Failed to mark tablet: ${res.status}`);
+      fetchMeds();
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message);
+    }
   };
 
-  // MARK TABLET TAKEN
- const markTaken = async (id: string) => {
-  try {
-    const res = await fetch(`${API_BASE}/api/medicines/${id}`, {
-      method: "PUT",
-    });
-    if (!res.ok) throw new Error(`Failed to mark tablet: ${res.status}`);
-    fetchMeds();
-  } catch (err: any) {
-    console.error(err);
-    setError(err.message);
-  }
-};
-
+  // ✅ useEffect calls fetchMeds
   useEffect(() => {
     fetchMeds();
-  }, []);
+  }, [fetchMeds]); // add fetchMeds as dependency
 
   return (
     <div className="p-10">
