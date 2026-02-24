@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Caretaker = require("../../models/Caretaker");
+const Caretaker = require("../models/Caretaker");
 
 router.post("/", async(req,res)=>{
 

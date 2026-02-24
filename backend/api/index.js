@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
-const medicineRoutes = require("../routes/medicineRoutes");
-const patientRoutes = require("../routes/patientRoutes");
+const medicineRoutes = require("./routes/medicineRoutes");
+const patientRoutes = require("./routes/patientRoutes");
 
 const app = express();
 
@@ -28,5 +28,4 @@ app.get("/api",(req,res)=>{
 app.use("/api/medicines",medicineRoutes);
 app.use("/api/patients",patientRoutes);
 
-// ⭐ VERY IMPORTANT
 module.exports = app;
