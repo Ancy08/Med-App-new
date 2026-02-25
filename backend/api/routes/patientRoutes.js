@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Patient = require("../models/Patient");
+const Patient = require("../../models/patient");
 
 const setCORS = (res) => {
   res.setHeader("Access-Control-Allow-Origin", "https://med-app-new.vercel.app");

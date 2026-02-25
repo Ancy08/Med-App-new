@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Caretaker = require("../models/Caretaker");
+const Caretaker = require("../../models/caretaker");
 
 // ✅ Add CORS headers for Vercel serverless safety
 const setCORS = (res) => {

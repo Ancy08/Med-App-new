@@ -13,7 +13,7 @@ const [error,setError] = useState("");
 const navigate = useNavigate();
 const location = useLocation();
 
-// Role coming from previous page
+// role from Home page
 const role = location.state?.role || "Patient";
 
 const handleSubmit = async(
@@ -24,34 +24,35 @@ e.preventDefault();
 
 setError("");
 
-// PASSWORD MATCH CHECK
-
 if(password !== confirmPass){
 
 setError("Passwords do not match");
 return;
 
 }
-if (password.length < 6) {
-  setError("Password must be at least 6 characters");
-  return;
+
+if(password.length < 6){
+
+setError("Password must be 6 characters");
+return;
+
 }
 
 try{
 
-// FIREBASE SIGNUP
-
 await createUserWithEmailAndPassword(
+
 auth,
 email,
 password
+
 );
 
-// SAVE ROLE
+// ⭐ IMPORTANT CHANGE
+// email base role save
+localStorage.setItem(email,role);
 
-localStorage.setItem("role",role);
-
-// AFTER SIGNUP → LOGIN PAGE
+alert("Signup Successful");
 
 navigate("/login");
 
@@ -80,8 +81,6 @@ className="p-10"
 style={{width:"50%"}}
 >
 
-{/* EMAIL */}
-
 <div className="mb-4 flex flex-row">
 
 <label className="block w-40 text-gray-700">
@@ -99,9 +98,6 @@ className="mt-1 p-2 w-full border rounded-md"
 />
 
 </div>
-
-
-{/* PASSWORD */}
 
 <div className="mb-4 flex flex-row">
 
@@ -121,9 +117,6 @@ className="mt-1 p-2 w-full border rounded-md"
 
 </div>
 
-
-{/* CONFIRM PASSWORD */}
-
 <div className="mb-4 flex flex-row">
 
 <label className="block w-40 text-gray-700">
@@ -142,9 +135,6 @@ className="mt-1 p-2 w-full border rounded-md"
 
 </div>
 
-
-{/* ERROR */}
-
 {error && (
 
 <p className="text-red-500 text-sm mb-2">
@@ -155,16 +145,14 @@ className="mt-1 p-2 w-full border rounded-md"
 
 )}
 
-
 <p
 className="text-blue-600 cursor-pointer my-2"
 onClick={()=>navigate("/login")}
 >
 
-Already have an account? Login here
+Already have an account? Login
 
 </p>
-
 
 <button
 type="submit"
