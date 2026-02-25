@@ -30,7 +30,7 @@ const Caretaker: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_URL]);
+  }, []);
 
   const markTaken = async (id: string) => {
     try {

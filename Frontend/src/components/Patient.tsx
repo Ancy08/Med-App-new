@@ -30,7 +30,7 @@ const Patient: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_URL]);
+  }, []);
 
   useEffect(() => { fetchMeds(); }, [fetchMeds]);
 
