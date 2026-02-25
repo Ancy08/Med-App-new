@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "xcki meas xrwe hlps",
-  authDomain: "med-app-dad26.firebaseapp.com",
-  projectId: "med-app-dad26",
-  storageBucket: "med-app-dad26.firebasestorage.app",
-  messagingSenderId: "958261054431",
-  appId: "1:958261054431:web:7cc73ad62ca95298a2d26a",
-  measurementId: "G-1VRQ9JELR9"
+  apiKey: "AIzaSyCu4CovpJh3hMbwku9w-bh5BpASY-ojNMk",
+  authDomain: "mmed-app-ada53.firebaseapp.com",
+  projectId: "med-app-ada53",
+  storageBucket: "med-app-ada53.firebasestorage.app",
+  messagingSenderId: "567228827186",
+  appId: "1:567228827186:web:29800bf68e489497699e2b",
+  measurementId: "G-QR9SZFPGC7"
 };
 
 const app = initializeApp(firebaseConfig);
