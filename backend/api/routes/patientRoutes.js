@@ -1,33 +1,40 @@
 const express = require("express");
 const router = express.Router();
-const sendMail = require("../../utils/mailer");
+const cors = require("cors");
+const Patient = require("@models/patient");
 
-const Patient = require("../../models/Patient");
+// Enable CORS for frontend
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://med-app-new.vercel.app"
+];
 
-router.post("/", async(req,res)=>{
+router.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+  })
+);
 
- try{
-
- const patient = await Patient.create(req.body);
-
- res.json(patient);
-
- }
-
- catch(err){
-
- res.status(400).json({error:err.message});
-
- }
-
+// Create a new patient
+router.post("/", async (req, res) => {
+  try {
+    const patient = await Patient.create(req.body);
+    res.json(patient);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
-router.get("/", async(req,res)=>{
-
- const data = await Patient.find().populate("caretaker");
-
- res.json(data);
-
+// Get all patients
+router.get("/", async (req, res) => {
+  try {
+    const data = await Patient.find().populate("caretaker");
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;
