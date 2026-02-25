@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface Medication {
   _id: string;
@@ -12,11 +12,7 @@ const Patient: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Backend URL (remove trailing slash)
-  const API_BASE =
-    (process.env.NODE_ENV === "development"
-      ? "http://localhost:5000"
-      : process.env.REACT_APP_API_URL?.replace(/\/$/, "")) || "";
+  const API_BASE = process.env.REACT_APP_API_URL?.replace(/\/$/, "") || "";
 
   const fetchMeds = useCallback(async () => {
     setLoading(true);
@@ -25,8 +21,7 @@ const Patient: React.FC = () => {
     try {
       const res = await fetch(`${API_BASE}/api/medicines`);
       const text = await res.text();
-      if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.substring(0,200)}...`);
-
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.substring(0, 200)}...`);
       const data: Medication[] = JSON.parse(text);
       setMedications(data);
     } catch (err: any) {
@@ -37,17 +32,13 @@ const Patient: React.FC = () => {
     }
   }, [API_BASE]);
 
-  useEffect(() => {
-    fetchMeds();
-  }, [fetchMeds]);
+  useEffect(() => { fetchMeds(); }, [fetchMeds]);
 
   return (
     <div className="p-5">
       <h2 className="text-xl font-bold mb-3">Patient Medicines</h2>
-
       {loading && <p>Loading medicines...</p>}
       {error && <p className="text-red-500">{error}</p>}
-
       {medications.length === 0 && !loading && !error && <p>No medicines found.</p>}
 
       {medications.map((med) => (

@@ -8,25 +8,20 @@ interface Medication {
   taken: boolean;
 }
 
-function Caretaker() {
+const Caretaker: React.FC = () => {
   const [medications, setMedications] = useState<Medication[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const API_BASE =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:5000"
-      : process.env.REACT_APP_API_URL?.replace(/\/$/, "");
+  const API_BASE = process.env.REACT_APP_API_URL?.replace(/\/$/, "") || "";
 
   const fetchMeds = useCallback(async () => {
     setLoading(true);
     setError(null);
-
     try {
       const res = await fetch(`${API_BASE}/api/medicines`);
       const text = await res.text();
-      if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.substring(0,200)}...`);
-
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.substring(0, 200)}...`);
       const data: Medication[] = JSON.parse(text);
       setMedications(data);
     } catch (err: any) {
@@ -48,9 +43,7 @@ function Caretaker() {
     }
   };
 
-  useEffect(() => {
-    fetchMeds();
-  }, [fetchMeds]);
+  useEffect(() => { fetchMeds(); }, [fetchMeds]);
 
   return (
     <div className="p-10">
@@ -76,6 +69,6 @@ function Caretaker() {
       ))}
     </div>
   );
-}
+};
 
 export default Caretaker;
