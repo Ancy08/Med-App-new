@@ -1,9 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const Medicine = require("@models/medicine");
+const Medicine = require("../models/Medicine");
 
-// ADD MEDICINE
+const setCORS = (res) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://med-app-new.vercel.app");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+};
+
+// Add new medicine
 router.post("/", async (req, res) => {
+  setCORS(res);
   try {
     const med = await Medicine.create(req.body);
     res.json(med);
@@ -12,8 +18,9 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET ALL MEDICINES
+// Get all medicines
 router.get("/", async (req, res) => {
+  setCORS(res);
   try {
     const meds = await Medicine.find();
     res.json(meds);
@@ -22,8 +29,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-// TABLET TAKEN UPDATE
+// Update tablet taken
 router.put("/:id", async (req, res) => {
+  setCORS(res);
   try {
     const update = await Medicine.findByIdAndUpdate(
       req.params.id,

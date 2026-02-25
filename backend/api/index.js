@@ -3,20 +3,21 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
+const caretakerRoutes = require("./api/routes/caretakerRoutes");
 const medicineRoutes = require("./api/routes/medicineRoutes");
 const patientRoutes = require("./api/routes/patientRoutes");
 
 const app = express();
 
-// ✅ Add CORS here, before routes
+// ✅ Global CORS
 const allowedOrigins = [
-  "http://localhost:3000",           // for local frontend testing
-  "https://med-app-new.vercel.app"   // deployed frontend URL
+  "http://localhost:3000",           // local frontend
+  "https://med-app-new.vercel.app"   // deployed frontend
 ];
 
 app.use(cors({
   origin: allowedOrigins,
-  methods: ["GET","POST","PUT","DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
@@ -24,14 +25,18 @@ app.use(express.json());
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
-  .then(()=> console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log("MongoDB Connection Error:", err));
 
 // Test route
-app.get("/", (req,res) => { res.send("Backend Working"); });
+app.get("/", (req, res) => res.send("Backend Working"));
 
-// ✅ Use routes after CORS setup
+// ✅ Routes
+app.use("/api/caretakers", caretakerRoutes);
 app.use("/api/medicines", medicineRoutes);
 app.use("/api/patients", patientRoutes);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 module.exports = app;
