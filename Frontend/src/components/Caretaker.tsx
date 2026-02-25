@@ -61,7 +61,7 @@ const Caretaker: React.FC = () => {
           </div>
           <button
             onClick={() => markTaken(med._id)}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-600 text-white px-4 py-2 rounded"
           >
             Tablet Taken
           </button>
