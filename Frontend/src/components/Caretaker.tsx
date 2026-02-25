@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-
+import API_URL from "../config/api";
 interface Medication {
   _id: string;
   patientName: string;
@@ -13,13 +13,13 @@ const Caretaker: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const API_BASE = process.env.REACT_APP_API_URL?.replace(/\/$/, "") || "";
+
 
   const fetchMeds = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/api/medicines`);
+      const res = await fetch(`${API_URL}/api/medicines`);
       const text = await res.text();
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.substring(0, 200)}...`);
       const data: Medication[] = JSON.parse(text);
@@ -30,11 +30,11 @@ const Caretaker: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_BASE]);
+  }, [API_URL]);
 
   const markTaken = async (id: string) => {
     try {
-      const res = await fetch(`${API_BASE}/api/medicines/${id}`, { method: "PUT" });
+      const res = await fetch(`${API_URL}/api/medicines/${id}`, { method: "PUT" });
       if (!res.ok) throw new Error(`Failed to mark tablet: ${res.status}`);
       fetchMeds();
     } catch (err: any) {
