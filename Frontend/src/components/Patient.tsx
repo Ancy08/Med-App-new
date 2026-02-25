@@ -1,50 +1,33 @@
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 interface Medication {
   _id: string;
-  patientName: string;
-  medicineName: string;
-  dosage: string;
-  taken: boolean;
+  name: string;
+  dosage?: string;
+  taken?: boolean;
 }
 
-function Patient() {
+const Patient: React.FC = () => {
   const [medications, setMedications] = useState<Medication[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ DETERMINE BACKEND URL
+  // Backend URL (remove trailing slash)
   const API_BASE =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:5000" // local backend
-      : process.env.REACT_APP_API_URL; // deployed backend URL
+    (process.env.NODE_ENV === "development"
+      ? "http://localhost:5000"
+      : process.env.REACT_APP_API_URL?.replace(/\/$/, "")) || "";
 
-  // ✅ FETCH MEDICINES (wrapped in useCallback for ESLint)
   const fetchMeds = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
       const res = await fetch(`${API_BASE}/api/medicines`);
-
-      // TEMPORARY: read as text first to catch HTML errors
       const text = await res.text();
-      if (!res.ok) {
-        throw new Error(
-          `HTTP ${res.status} error: ${text.substring(0, 200)}...`
-        );
-      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.substring(0,200)}...`);
 
-      // Parse JSON safely
-      let data: Medication[] = [];
-      try {
-        data = JSON.parse(text);
-      } catch {
-        throw new Error(
-          "Response is not valid JSON. Maybe backend returned HTML?"
-        );
-      }
-
+      const data: Medication[] = JSON.parse(text);
       setMedications(data);
     } catch (err: any) {
       console.error("Fetch error:", err);
@@ -54,53 +37,28 @@ function Patient() {
     }
   }, [API_BASE]);
 
-  // ✅ MARK TABLET TAKEN
-  const markTaken = async (id: string) => {
-    try {
-      const res = await fetch(`${API_BASE}/api/medicines/${id}`, {
-        method: "PUT",
-      });
-      if (!res.ok) throw new Error(`Failed to mark tablet: ${res.status}`);
-      fetchMeds();
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message);
-    }
-  };
-
-  // ✅ useEffect calls fetchMeds
   useEffect(() => {
     fetchMeds();
-  }, [fetchMeds]); // add fetchMeds as dependency
+  }, [fetchMeds]);
 
   return (
-    <div className="p-10">
-      <h1 className="text-2xl font-bold mb-5">Patient Dashboard</h1>
+    <div className="p-5">
+      <h2 className="text-xl font-bold mb-3">Patient Medicines</h2>
 
       {loading && <p>Loading medicines...</p>}
-      {error && <p className="text-red-500">Error: {error}</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {medications.length === 0 && !loading && !error && <p>No medicines found.</p>}
 
       {medications.map((med) => (
-        <div
-          key={med._id}
-          className="border p-4 mt-4 flex justify-between rounded"
-        >
-          <div>
-            <h2 className="font-bold">{med.medicineName}</h2>
-            <p>Dosage: {med.dosage}</p>
-            <p>Status: {med.taken ? "Taken ✅" : "Pending ❌"}</p>
-          </div>
-
-          <button
-            onClick={() => markTaken(med._id)}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Tablet Taken
-          </button>
+        <div key={med._id} className="border p-3 mb-2 rounded">
+          <h3 className="font-bold">{med.name}</h3>
+          {med.dosage && <p>Dosage: {med.dosage}</p>}
+          {med.taken !== undefined && <p>Status: {med.taken ? "Taken ✅" : "Pending ❌"}</p>}
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default Patient;
