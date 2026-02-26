@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Medicine from "../../models/Medicine";
+import Medicine from "../../models/medicine";
 
 // Read env safely
 const MONGO_URI = process.env.MONGO_URI;
