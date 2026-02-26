@@ -19,7 +19,7 @@ const Caretaker: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_URL}/medicines`);
+      const res = await fetch(`${API_URL}/api/medicines`);
       const text = await res.text();
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.substring(0, 200)}...`);
       const data: Medication[] = JSON.parse(text);
