@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import API_URL from "../config/api";
+
 interface Medication {
   _id: string;
   patientName: string;
@@ -13,11 +14,11 @@ const Caretaker: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
-
+  // Fetch medications
   const fetchMeds = useCallback(async () => {
     setLoading(true);
     setError(null);
+
     try {
       const res = await fetch(`${API_URL}/api/medicines`);
       const text = await res.text();
@@ -32,22 +33,26 @@ const Caretaker: React.FC = () => {
     }
   }, []);
 
-  const markTaken = async (id: string) => {
+  // Mark a tablet as taken
+  const markTaken = useCallback(async (id: string) => {
     try {
-      const res = await fetch(`${API_URL}/medicines/${id}`, { method: "PUT" });
+      const res = await fetch(`${API_URL}/api/medicines/${id}`, { method: "PUT" });
       if (!res.ok) throw new Error(`Failed to mark tablet: ${res.status}`);
       fetchMeds();
     } catch (err: any) {
       console.error(err);
       setError(err.message);
     }
-  };
+  }, [fetchMeds]);
 
-  useEffect(() => { fetchMeds(); }, [fetchMeds]);
+  useEffect(() => {
+    fetchMeds();
+  }, [fetchMeds]);
 
   return (
     <div className="p-10">
       <h1 className="text-2xl font-bold mb-5">Patient Dashboard</h1>
+
       {loading && <p>Loading medicines...</p>}
       {error && <p className="text-red-500">Error: {error}</p>}
 
