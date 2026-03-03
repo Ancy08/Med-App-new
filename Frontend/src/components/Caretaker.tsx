@@ -20,7 +20,7 @@ const Caretaker: React.FC = () => {
     setError(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/medicines`);
+      const res = await fetch(`${API_URL}/medicines`);
       const text = await res.text();
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.substring(0, 200)}...`);
       const data: Medication[] = JSON.parse(text);
@@ -36,7 +36,7 @@ const Caretaker: React.FC = () => {
   // Mark a tablet as taken
   const markTaken = useCallback(async (id: string) => {
     try {
-      const res = await fetch(`${API_URL}/api/medicines/${id}`, { method: "PUT" });
+      const res = await fetch(`${API_URL}/medicines/${id}`, { method: "PUT" });
       if (!res.ok) throw new Error(`Failed to mark tablet: ${res.status}`);
       fetchMeds();
     } catch (err: any) {
