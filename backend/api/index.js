@@ -27,9 +27,9 @@ mongoose.connect(process.env.MONGO_URI)
 .then(()=> console.log("Mongo Connected"))
 .catch(err => console.log(err));
 
-app.use("/api/medicines", medicineRoutes);
-app.use("/api/patients", patientRoutes);
-app.use("/api/caretakers", caretakerRoutes);
+app.use("/medicines", medicineRoutes);
+app.use("/patients", patientRoutes);
+app.use("/caretakers", caretakerRoutes);
 
 app.get("/", (req,res)=>{
  res.send("Backend Running");
