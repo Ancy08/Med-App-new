@@ -11,18 +11,7 @@ const allowedOrigins = [
   "https://med-app-new.vercel.app",
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error("Not allowed by CORS"));
-      }
-    },
-  })
-);
+app.use(cors());
 
 /* ------------------ Middleware ------------------ */
 app.use(express.json());
