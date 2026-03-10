@@ -1,5 +1,2 @@
-declare const process: any;
-const API_URL = process.env.REACT_APP_API_URL ??
-"https://med-app-new-4inq.vercel.app";
-
+const API_URL = process.env.REACT_APP_API_URL;
 export default API_URL;
