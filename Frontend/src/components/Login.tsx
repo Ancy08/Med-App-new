@@ -5,144 +5,121 @@ import auth from "../config/firebase";
 
 function Login() {
 
-const [email,setEmail] = useState("");
-const [password,setPassword] = useState("");
-const [error,setError] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-const navigate = useNavigate();
+    const navigate = useNavigate();
 
-const handleLogin = async(
+    const handleLogin = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
 
-e:React.FormEvent<HTMLFormElement>
+        e.preventDefault();
 
-)=>{
+        setError("");
 
-e.preventDefault();
+        try {
 
-setError("");
+            await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
 
-try{
+            // get role from localStorage
+            const role = localStorage.getItem(email);
 
-await signInWithEmailAndPassword(
+            console.log("User role:", role);
 
-auth,
-email,
-password
+            if (role === "Caretaker") {
+                navigate("/caretaker");
+            }
+            else if (role === "Patient") {
+                navigate("/patient");
+            }
+            else {
+                alert("Role not found. Please signup again.");
+            }
 
-);
+        }
+        catch (err: any) {
+            setError(err.message);
+        }
 
-// ⭐ IMPORTANT CHANGE
-const role = localStorage.getItem(email);
+    };
 
-if(role === "Caretaker"){
+    return (
 
-navigate("/caretaker");
+        <div className="bg-red-100 min-h-screen flex flex-col justify-center items-center">
 
-}
+            <h1 className="text-2xl font-bold mb-5">
+                Login
+            </h1>
 
-else{
+            <form
+                onSubmit={handleLogin}
+                className="p-10"
+                style={{ width: "50%" }}
+            >
 
-navigate("/patient");
+                <div className="mb-4 flex flex-row">
 
-}
+                    <label className="block w-40">
+                        Email:
+                    </label>
 
-}
-catch(err:any){
+                    <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="border p-2 w-full rounded"
+                    />
 
-setError(err.message);
+                </div>
 
-}
+                <div className="mb-4 flex flex-row">
 
-};
+                    <label className="block w-40">
+                        Password:
+                    </label>
 
-return(
+                    <input
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="border p-2 w-full rounded"
+                    />
 
-<div className="bg-red-100 min-h-screen flex flex-col justify-center items-center">
+                </div>
 
-<h1 className="text-2xl font-bold mb-5">
+                {error && (
+                    <p className="text-red-500">
+                        {error}
+                    </p>
+                )}
 
-Login
+                <p
+                    className="text-blue-600 cursor-pointer my-2"
+                    onClick={() => navigate("/signup")}
+                >
+                    Create Account ?
+                </p>
 
-</h1>
+                <button
+                    type="submit"
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                >
+                    Login
+                </button>
 
-<form
-onSubmit={handleLogin}
-className="p-10"
-style={{width:"50%"}}
->
+            </form>
 
-<div className="mb-4 flex flex-row">
+        </div>
 
-<label className="block w-40">
-
-Email:
-
-</label>
-
-<input
-type="email"
-required
-value={email}
-onChange={(e)=>setEmail(e.target.value)}
-className="border p-2 w-full rounded"
-/>
-
-</div>
-
-<div className="mb-4 flex flex-row">
-
-<label className="block w-40">
-
-Password:
-
-</label>
-
-<input
-type="password"
-required
-value={password}
-onChange={(e)=>setPassword(e.target.value)}
-className="border p-2 w-full rounded"
-/>
-
-</div>
-
-{error &&(
-
-<p className="text-red-500">
-
-{error}
-
-</p>
-
-)}
-
-<p
-className="text-blue-600 cursor-pointer my-2"
-onClick={()=>navigate("/signup")}
->
-
-Create Account ?
-
-</p>
-
-<button
-
-type="submit"
-
-className="bg-red-500 text-white px-4 py-2 rounded"
-
->
-
-Login
-
-</button>
-
-</form>
-
-</div>
-
-);
+    );
 
 }
 
